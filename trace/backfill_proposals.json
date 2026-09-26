@@ -1,0 +1,15 @@
+{
+  "_note": "LLM backfill output. Proposals do NOT count toward coverage; only in-code tags do. A human confirms by placing the tag, or adjudicates not_found.",
+  "proposals": [
+    {"constraint": "SC-1", "status": "confirmed",
+     "location": "src/rollout_controller.py::RolloutController.advance",
+     "llm_rationale": "Returns early when the current batch's health report is absent or unhealthy."},
+    {"constraint": "SC-2", "status": "confirmed",
+     "location": "src/rollout_controller.py::RolloutController.on_soak_sample",
+     "llm_rationale": "Sets halted and calls rollback when error_rate exceeds error_threshold."},
+    {"constraint": "SC-3", "status": "not_found",
+     "location": null,
+     "llm_rationale": "config_version returns the batch's requested version; no comparison against an approval record found.",
+     "human_decision": null}
+  ]
+}

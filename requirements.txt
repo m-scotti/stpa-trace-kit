@@ -1,0 +1,2 @@
+sysml2py==0.5.3
+setuptools<81  # textX (a sysml2py dependency) imports pkg_resources
