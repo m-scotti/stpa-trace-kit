@@ -39,19 +39,16 @@ package RolloutSafety {
     }
 
     // ---- Control structure ----------------------------------------------
-    // Library feedback runs sensor -> controller, so the batch's health signals reach the
-    // controller through a health monitor rather than directly from the batch.
+    // Feedback runs straight from the batch to the controller. The flows are typed by the
+    // library's Feedback definition rather than marked #feedback: #feedback subsets the
+    // library usage `feedbacks`, which only allows sensor -> controller.
     #controlStructure part rolloutSystem {
         :>> controllersRef = rolloutController;
-        :>> sensorsRef = healthMonitor;
         :>> processesRef = batch;
         :>> controlActionsRef = (pushConfig, rollback);
         :>> feedbacksRef = (healthReport, errorRate);
         #controller part rolloutController {
             doc /* Automated rollout controller (src/rollout_controller.py::RolloutController). */
-        }
-        #sensor part healthMonitor {
-            doc /* Collects per-batch health reports and soak-window error rates. */
         }
         #process part batch {
             doc /* Controlled process: one batch of hosts receiving the config. */
@@ -64,12 +61,14 @@ package RolloutSafety {
             end ::> rolloutController;
             end ::> batch;
         }
-        #feedback flow healthReport {
-            end ::> healthMonitor;
+        flow healthReport : Feedback {
+            doc /* Per-batch health report. */
+            end ::> batch;
             end ::> rolloutController;
         }
-        #feedback flow errorRate {
-            end ::> healthMonitor;
+        flow errorRate : Feedback {
+            doc /* Error rate during the soak window. */
+            end ::> batch;
             end ::> rolloutController;
         }
     }

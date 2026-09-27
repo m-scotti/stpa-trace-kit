@@ -56,6 +56,21 @@ class StpaCompleteness(unittest.TestCase):
         _, problems = check(COMPLETE.replace("typesOfCAs.Provided", "typesOfCAs.Sometimes"))
         self.assertEqual(problems, ["#uca UCA-1 (u1): typeRef = Sometimes, which is not a TypesOfCA literal"])
 
+    def test_element_after_typed_flow_is_still_checked(self):
+        # Inside a part body, sysml2py parses a marked usage differently right after a flow
+        # typed with `:` (IndividualUsage instead of ExtendedUsage).
+        src = """package M {
+            #loss occurrence <'L-1'> l1;
+            part grp {
+                flow fb : Feedback { end ::> a; end ::> b; }
+                #hazard occurrence <'H-2'> h2 { :>> systemRef = s; }
+            }
+        }"""
+        counts, problems = check(src)
+        self.assertEqual(counts["hazard"], 1)
+        self.assertEqual(problems, ["#hazard H-2 (h2): unsafeCondition not set",
+                                    "#hazard H-2 (h2): lossesRef not set"])
+
     def test_hazard_empty_condition_and_no_loss(self):
         src = COMPLETE.replace('"bad state"', '""').replace(":>> lossesRef = Losses::l1;", "")
         _, problems = check(src)

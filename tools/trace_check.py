@@ -55,19 +55,26 @@ def unquote(name):
     return name[1:-1] if name and name.startswith("'") else name
 
 
-def parse(path):
+class ModelSyntaxError(Exception):
+    """A model file sysml2py can't parse. The message is `path:line:col`."""
+
+
+def parse(path, shown=None):
     printed = io.StringIO()  # sysml2py prints the textX error (with line:col) instead of raising it
     try:
         with contextlib.redirect_stdout(printed):
             return load_grammar(path.read_text())
     except Exception:
         pos = re.search(r":(\d+):(\d+):", printed.getvalue())
-        where = f":{pos[1]}:{pos[2]}" if pos else ""
-        sys.exit(f"TRACE CHECK FAILED\n  - {path.relative_to(ROOT)}{where}: not valid SysML v2")
+        shown = shown or path
+        raise ModelSyntaxError(f"{shown}:{pos[1]}:{pos[2]}" if pos else str(shown)) from None
 
 
 def model_trees():
-    return [parse(f) for f in sorted((ROOT / "model").rglob("*.sysml"))]
+    try:
+        return [parse(f, f.relative_to(ROOT)) for f in sorted((ROOT / "model").rglob("*.sysml"))]
+    except ModelSyntaxError as e:
+        sys.exit(f"TRACE CHECK FAILED\n  - {e}: not valid SysML v2")
 
 
 def model_constraints(trees):
@@ -97,14 +104,39 @@ def value_names(valuepart):
     return names
 
 
+# sysml2py 0.5.3 parses a usage marked with metadata keywords (`#uca occurrence ...`) as an
+# ExtendedUsage, except right after a flow typed with `:` in the same body, where it becomes
+# an IndividualUsage whose `usageExtension` holds the keywords. Same content, other key.
+MARKED = {"ExtendedUsage": "keyword", "IndividualUsage": "usageExtension"}
+
+
+def marked_keywords(node):
+    """The metadata keywords of a marked usage node, or None if node isn't one."""
+    key = MARKED.get(node.get("name")) if isinstance(node, dict) else None
+    if key and node.get(key):
+        return [m["type"]["names"][-1] for m in nodes(node[key], "MetadataTyping")]
+    return None
+
+
+def marked_usages(tree):
+    """Yield (keywords, usage) for every marked usage, in document order."""
+    if isinstance(tree, dict):
+        metas = marked_keywords(tree)
+        if metas:
+            yield metas, tree["usage"]
+        for v in tree.values():
+            yield from marked_usages(v)
+    elif isinstance(tree, list):
+        for v in tree:
+            yield from marked_usages(v)
+
+
 def stpa_elements(trees):
     """Yield (keyword, name, short name, fields) for each usage marked with a metadata keyword
     such as #uca. fields maps each redefined feature to the names its value refers to."""
     for tree in trees:
-        for ext in nodes(tree, "ExtendedUsage"):
-            usage = ext["usage"]
-            metas = [m["type"]["names"][-1] for m in nodes(ext["keyword"], "MetadataTyping")]
-            ident = next(nodes(usage["declaration"], "Identification"), {})
+        for metas, usage in marked_usages(tree):
+            ident = next(nodes(usage.get("declaration"), "Identification"), {})
             # sysml2py 0.5.3 reads `#hazard occurrence <'H-1'> h1` correctly, but reads
             # `#context occurrence c1` as three metadata keywords, the last being the name.
             name = ident.get("declaredName") or (metas[-1] if len(metas) > 2 else None)
