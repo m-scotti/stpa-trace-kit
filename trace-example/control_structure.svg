@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="497" height="288" viewBox="0 0 497 288" role="img">
+<title>Control structure: rolloutSystem</title>
+<style>
+  .surface { fill: #fcfcfb; } .ink { fill: #0b0b0b; } .ink2 { fill: #52514e; }
+  .edge { fill: none; stroke: #52514e; stroke-width: 2; }
+  .fb { stroke-dasharray: 6 4; }
+  .arrow { fill: #52514e; }
+  .box { fill: #fcfcfb; stroke-width: 2; }
+  .g0 { stroke: #8a8984; stroke-dasharray: 4 3; } .f0 { fill: #8a8984; }
+  .g1 { stroke: #2a78d6; } .f1 { fill: #2a78d6; }
+  .g2 { stroke: #eb6834; } .f2 { fill: #eb6834; }
+  .g3 { stroke: #1baf7a; } .f3 { fill: #1baf7a; }
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  @media (prefers-color-scheme: dark) {
+    .surface, .box { fill: #1a1a19; } .ink { fill: #ffffff; } .ink2 { fill: #c3c2b7; }
+    .edge { stroke: #c3c2b7; } .arrow { fill: #c3c2b7; }
+    .g1 { stroke: #3987e5; } .f1 { fill: #3987e5; }
+    .g2 { stroke: #d95926; } .f2 { fill: #d95926; }
+    .g3 { stroke: #199e70; } .f3 { fill: #199e70; }
+  }
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<rect class="surface" width="100%" height="100%"/>
+<text class="ink" x="24" y="38" font-size="15" font-weight="600">Control structure: rolloutSystem</text>
+<rect class="f1" x="24" y="51" width="12" height="12" rx="2"/><text class="ink2" x="42" y="61" font-size="12">controller</text>
+<rect class="f3" x="134.0" y="51" width="12" height="12" rx="2"/><text class="ink2" x="152.0" y="61" font-size="12">process</text>
+<path class="edge" d="M222.4,57 h28" marker-end="url(#arrow)"/><text class="ink2" x="258.4" y="61" font-size="12">control action</text>
+<path class="edge fb" d="M379.20000000000005,57 h28" marker-end="url(#arrow)"/><text class="ink2" x="415.20000000000005" y="61" font-size="12">feedback</text>
+<path class="edge" d="M106.0,128.0 L106.0,172.0 L106.0,216.0" marker-end="url(#arrow)"><title>control action pushConfig, rollback: rolloutController → batch</title></path>
+<path class="edge fb" d="M134.0,216.0 L134.0,172.0 L134.0,128.0" marker-end="url(#arrow)"><title>feedback healthReport, errorRate: batch → rolloutController</title></path>
+<g><title>control action pushConfig, rollback: rolloutController → batch</title><text class="ink" font-size="11" text-anchor="end"><tspan x="98.0" y="169.0">pushConfig</tspan><tspan x="98.0" y="183.0">rollback</tspan></text></g>
+<g><title>feedback healthReport, errorRate: batch → rolloutController</title><text class="ink" font-size="11" text-anchor="start"><tspan x="142.0" y="169.0">healthReport</tspan><tspan x="142.0" y="183.0">errorRate</tspan></text></g>
+<g><title>rolloutController (controller)</title><rect class="box g1" x="38.2" y="80.0" width="163.6" height="48" rx="4"/><rect class="f1" x="39.2" y="81.0" width="6" height="46" rx="2"/><text class="ink" x="123.0" y="101.0" font-size="13" font-weight="600" text-anchor="middle">rolloutController</text><text class="ink2" x="123.0" y="117.0" font-size="11" text-anchor="middle">controller</text></g>
+<g><title>batch (process)</title><rect class="box g3" x="72.0" y="216.0" width="96.0" height="48" rx="4"/><rect class="f3" x="73.0" y="217.0" width="6" height="46" rx="2"/><text class="ink" x="123.0" y="237.0" font-size="13" font-weight="600" text-anchor="middle">batch</text><text class="ink2" x="123.0" y="253.0" font-size="11" text-anchor="middle">process</text></g>
+</svg>

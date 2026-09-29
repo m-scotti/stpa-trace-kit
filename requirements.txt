@@ -1,0 +1,12 @@
+# Exact versions the trace check was tested with (Python 3.12.3, Linux).
+# These pins have prebuilt wheels for Python 3.9-3.12 only; numpy 1.26.4 has none for 3.13+.
+# setuptools stays below 81 because textX imports pkg_resources; its deprecation warning says to pin <81.
+Arpeggio==2.0.3
+astropy==5.3.4
+numpy==1.26.4
+packaging==26.3
+pyerfa==2.0.1.5
+PyYAML==6.0.3
+setuptools==80.10.2
+sysml2py==0.5.3
+textX==3.1.1
