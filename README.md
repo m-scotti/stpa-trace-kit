@@ -16,6 +16,7 @@ placed does.
 |---|---|
 | `trace-example/` | Reference example and regression test: a toy config-rollout controller, its STPA model, tests, the trace check and its unit tests. |
 | `SysMLv2LibrarySTPA/` | DLR's STPA library, unmodified. `UPSTREAM.md` gives the commit and how to verify it. |
+| `LICENSE-MIT`, `LICENSE-APACHE` | License for this kit (MIT or Apache-2.0, your choice). |
 | `requirements.txt` | Exact Python package versions the check was tested with. |
 | `PILOT.md` | Plan and scoring table for a pilot on a real control structure. |
 | `BACKFILL_PROMPT.md` | Instructions to give an LLM for the backfill step. |
@@ -166,3 +167,9 @@ and traps found in the library and in Syside.
 - **CI with full SysML v2 semantics** would need Syside Automator, which needs a license key
   even to import and a paid Deployment License for CI, or the OMG pilot implementation, which
   needs Java and is untested here.
+
+## License
+
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or
+[MIT license](LICENSE-MIT), at your option. `SysMLv2LibrarySTPA/` is DLR's work under its
+own copy of the same licenses.
